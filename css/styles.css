@@ -97,6 +97,10 @@ h2 {
   margin-bottom: 3rem;
 }
 
+h2 span {
+  display: inline-block;
+}
+
 main {
   display: grid;
   padding-top: 4rem;
@@ -312,4 +316,65 @@ a.link:hover:before {
   html {
     --page-padding-v: 10rem;
   }
+}
+
+
+
+
+@keyframes fade-up {
+  from {
+    transform: translateY(1rem);
+    opacity: 0;
+  }
+
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.ani-fade-up {
+  opacity: 0;
+  animation: fade-up 1s cubic-bezier(0.18, 0.5, 0, 1.05) forwards;
+}
+
+
+.ani-delay-10 {
+  animation-delay: 0.1s;
+}
+
+.ani-delay-20 {
+  animation-delay: 0.2s;
+}
+
+.ani-delay-30 {
+  animation-delay: 0.3s;
+}
+
+.ani-delay-40 {
+  animation-delay: 0.4s;
+}
+
+.ani-delay-50 {
+  animation-delay: 0.5s;
+}
+
+.ani-delay-60 {
+  animation-delay: 0.6s;
+}
+
+.ani-delay-70 {
+  animation-delay: 0.7s;
+}
+
+.ani-delay-80 {
+  animation-delay: 0.8s;
+}
+
+.ani-delay-90 {
+  animation-delay: 0.9s;
+}
+
+.ani-delay-100 {
+  animation-delay: 1s;
 }
