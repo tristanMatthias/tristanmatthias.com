@@ -1,6 +1,29 @@
 html {
   --page-padding-h: 2rem;
   --page-padding-v: 2rem;
+
+
+
+  /* --color: #333333;
+  --bg: #FD6655; */
+
+  /* --color: #E3DDCD;
+  --bg: #5282c2; */
+
+  /* --color: #201E19;
+  --bg: #E3DDCD; */
+
+  /* --color: #5282c2;
+  --bg: #E3DDCD; */
+
+  --color: #09ECE0;
+  --bg: #49317B;
+
+  /* --color: black;
+  --bg: rgb(255, 255, 255); */
+
+  --color: #E3DDCD;
+  --bg: #201E19;
 }
 
 
@@ -17,6 +40,8 @@ html,
 body {
   font-size: 10px;
   height: 100%;
+  color: var(--color);
+  background: var(--bg);
 }
 
 body {
@@ -44,6 +69,14 @@ header {
 
 header svg {
   width: 12rem;
+}
+
+svg .fill {
+  fill: var(--color);
+}
+
+svg .stroke {
+  stroke: var(--color);
 }
 
 header svg.full {
@@ -101,7 +134,7 @@ footer {
   align-items: flex-start;
   flex-wrap: wrap;
   padding-top: 2rem;
-  border-top: 0.3rem solid black;
+  border-top: 0.3rem solid var(--color);
 }
 
 footer:before {
@@ -111,7 +144,7 @@ footer:before {
   top: -8rem;
   height: 8rem;
   width: 100%;
-  background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(0deg, var(--bg) 0%, rgba(255, 255, 255, 0) 100%);
 }
 
 footer .social,
@@ -150,7 +183,7 @@ footer .location span {
 a {
   font-weight: bold;
   text-decoration: underline;
-  color: black;
+  color: var(--color);
 }
 
 a.link {
@@ -161,7 +194,7 @@ a.link {
   font-size: 1.4rem;
   letter-spacing: 2px;
   padding-bottom: 0.5rem;
-  color: black;
+  color: var(--color);
   text-decoration: none;
   margin-right: 2rem;
   transition: all 0.1s ease-in-out;
@@ -174,13 +207,13 @@ a.link:before {
   width: 100%;
   bottom: 0;
   height: 0.3rem;
-  background: black;
+  background: var(--color);
   transition: all 0.1s ease-in-out;
   z-index: -1;
 }
 
 a.link:hover {
-  color: white;
+  color: var(--bg);
 }
 
 a.link:hover:before {
