@@ -200,6 +200,10 @@ a.link {
   transition: all 0.1s ease-in-out;
 }
 
+a.link span {
+  position: relative;
+}
+
 a.link:before {
   content: '';
   position: absolute;
@@ -209,7 +213,6 @@ a.link:before {
   height: 0.3rem;
   background: var(--color);
   transition: all 0.1s ease-in-out;
-  z-index: -1;
 }
 
 a.link:hover {
