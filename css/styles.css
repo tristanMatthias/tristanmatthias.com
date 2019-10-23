@@ -23,7 +23,8 @@ html {
   --bg: rgb(255, 255, 255); */
 
   --color: #E3DDCD;
-  --bg: #201E19;
+  --bg: rgba(32, 30, 25, 1);
+  --transparent: rgba(32, 30, 25, 0);
 }
 
 
@@ -144,7 +145,7 @@ footer:before {
   top: -8rem;
   height: 8rem;
   width: 100%;
-  background: linear-gradient(0deg, var(--bg) 0%, rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(0deg, var(--bg) 0%, var(--transparent) 100%);
 }
 
 footer .social,
