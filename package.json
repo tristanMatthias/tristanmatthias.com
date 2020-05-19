@@ -1,0 +1,18 @@
+{
+  "name": "tristanmatthias",
+  "version": "1.0.0",
+  "description": "tristanmatthias.com",
+  "scripts": {
+    "build": "make build",
+    "dev": "http-server dist & make watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tristanMatthias/tristanmatthias.com.git"
+  },
+  "devDependencies": {
+    "http-server": "^0.12.3",
+    "pug": "^2.0.4",
+    "pug-cli": "^1.0.0-alpha6"
+  }
+}
