@@ -6,6 +6,9 @@ html {
   height: 100%;
   font-family: Palatino, Georgia, 'Times New Roman', Times, serif;
   background-color: #dbdbeb;
+  --c-black: #363461;
+  --c-blue: #3534a5;
+  --c-orange: #fa8601;
 }
 
 body {
@@ -14,7 +17,7 @@ body {
   align-items: center;
   justify-content: center;
   background-color: #f0f0f0;
-  color: #363461;
+  color: var(--c-black);
   border-radius: 4px;
 }
 
@@ -24,16 +27,24 @@ body {
   padding: 20px;
 }
 
+a.resume {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
 
+h1 {
+  color: var(--c-blue);
+}
 
 a,
 a:visited {
-  color: #3534a5;
+  color: var(--c-blue);
   transition: color 0.1s ease-out;
 }
 
 a:hover {
-  color: #fa8601;
+  color: var(--c-orange);
 }
 
 svg {
@@ -73,4 +84,16 @@ aside {
   h2 br {
     display: none;
   }
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  color: #6f6e83;
+}
+
+.location svg {
+  width: 16px;
+  margin-right: 6px;
 }
