@@ -7,6 +7,7 @@ html {
   font-family: Palatino, Georgia, 'Times New Roman', Times, serif;
   background-color: #dbdbeb;
   --c-black: #363461;
+  --c-grey: #a4a3a9;
   --c-blue: #3534a5;
   --c-orange: #fa8601;
 }
@@ -96,4 +97,24 @@ aside {
 .location svg {
   width: 16px;
   margin-right: 6px;
+}
+
+
+/********************************************************************* Poems  */
+article.poem header {
+  display: flex;
+  align-items: center;
+}
+
+article.poem p {
+  line-height: 1.5;
+}
+
+article.poem p span {
+  display: block;
+}
+
+article header time {
+  margin-left: auto;
+  color: var(--c-grey);
 }

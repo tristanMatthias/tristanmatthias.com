@@ -13,6 +13,6 @@
   "devDependencies": {
     "http-server": "^0.12.3",
     "pug": "^2.0.4",
-    "pug-cli": "^1.0.0-alpha6"
+    "pug-cli": "1.0.0-alpha6"
   }
 }
