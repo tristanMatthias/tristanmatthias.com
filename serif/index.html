@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>serif — typeset your Markdown</title>
+<script>
+/* Set theme before first paint to avoid a flash. */
+(function () {
+  try {
+    var t = localStorage.getItem("serif-theme");
+    if (t !== "light" && t !== "dark") {
+      t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    document.documentElement.setAttribute("data-theme", t);
+  } catch (e) {}
+})();
+</script>
+<style>
+/* ---- Theme tokens (shared with the serif document look) ------------------ */
+:root {
+  color-scheme: light dark;
+  --font-serif: "Charter", "Iowan Old Style", "Palatino Linotype", "Palatino",
+    "Book Antiqua", Georgia, "Times New Roman", serif;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", "Fira Code", ui-monospace,
+    "Menlo", "Consolas", "Liberation Mono", monospace;
+
+  --bg: #fbfaf8;
+  --surface: #f3f0ea;
+  --surface-2: #ece8df;
+  --text: #22201d;
+  --muted: #6b655d;
+  --border: #e6e1d7;
+  --accent: #1a56c4;
+  --accent-strong: #103e94;
+  --shadow: 0 1px 2px rgba(30, 25, 18, 0.05);
+  --shadow-lg: 0 8px 40px rgba(30, 25, 18, 0.10);
+}
+
+html[data-theme="dark"] {
+  --bg: #171614;
+  --surface: #201e1b;
+  --surface-2: #292722;
+  --text: #e7e3db;
+  --muted: #9d968a;
+  --border: #322f2a;
+  --accent: #82b1ff;
+  --accent-strong: #adceff;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.45);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-size: clamp(18px, 1.02rem + 0.35vw, 21px);
+  line-height: 1.72;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+::selection { background: rgba(26, 86, 196, 0.18); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* ---- Landing layout ------------------------------------------------------ */
+.landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: clamp(1.5rem, 5vw, 4rem);
+  text-align: center;
+}
+
+.brand {
+  font-family: var(--font-sans);
+  font-weight: 760;
+  font-size: clamp(2.4rem, 1.8rem + 3vw, 3.6rem);
+  letter-spacing: -0.021em;
+  margin: 0;
+  line-height: 1;
+}
+
+.tagline {
+  margin: 0;
+  max-width: 34rem;
+  color: var(--muted);
+  text-wrap: balance;
+}
+
+/* ---- Dropzone ------------------------------------------------------------ */
+.dropzone {
+  width: min(38rem, 100%);
+  padding: clamp(2.5rem, 6vw, 4rem) 2rem;
+  border: 2px dashed var(--border);
+  border-radius: 1.1em;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: border-color 0.18s ease, background-color 0.18s ease,
+    transform 0.18s ease, box-shadow 0.18s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dropzone:hover {
+  border-color: var(--muted);
+  background: var(--surface-2);
+}
+
+.dropzone.dragover {
+  border-color: var(--accent);
+  border-style: solid;
+  background: var(--surface-2);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.dropzone.disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.dropzone svg {
+  width: 2.75rem;
+  height: 2.75rem;
+  color: var(--muted);
+  stroke-width: 1.6;
+}
+
+.dropzone .primary {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.dropzone .primary .link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.dropzone .hint {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.status {
+  min-height: 1.4em;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.status.error { color: #c4381a; }
+html[data-theme="dark"] .status.error { color: #ff9a80; }
+
+.foot {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.foot a { color: inherit; }
+
+/* ---- Result view --------------------------------------------------------- */
+.result {
+  position: fixed;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  background: var(--bg);
+}
+.result.open { display: flex; }
+
+.result-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+}
+
+.result-bar .name {
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.btn {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.btn:hover { border-color: var(--muted); background: var(--surface-2); }
+.btn.accent { color: #fff; background: var(--accent); border-color: var(--accent); }
+html[data-theme="dark"] .btn.accent { color: #10131a; }
+.btn.accent:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+
+#preview {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  background: var(--bg);
+}
+</style>
+</head>
+<body>
+
+<main class="landing" id="landing">
+  <h1 class="brand">serif</h1>
+  <p class="tagline">Drop a Markdown file to see it turned into a beautifully
+    typeset, self-contained page — rendered entirely in your browser.</p>
+
+  <label class="dropzone disabled" id="dropzone">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+      <path d="M7 10l5-5 5 5"></path>
+      <path d="M12 5v12"></path>
+    </svg>
+    <span class="primary">Drop a <code>.md</code> file, or <span class="link">browse</span></span>
+    <span class="hint">Nothing is uploaded — rendering runs locally via WebAssembly.</span>
+    <input type="file" id="file-input" accept=".md,.markdown,.mdown,.mkd,.mkdn,.text,.txt,text/markdown,text/plain" hidden>
+  </label>
+
+  <p class="status" id="status">Loading renderer…</p>
+
+  <p class="foot">Powered by <a href="https://github.com/tristanMatthias/serif">serif</a></p>
+</main>
+
+<section class="result" id="result">
+  <div class="result-bar">
+    <span class="name" id="result-name"></span>
+    <button class="btn" id="download-btn" type="button">Download .html</button>
+    <button class="btn accent" id="new-btn" type="button">New file</button>
+  </div>
+  <iframe id="preview" title="Rendered document"></iframe>
+</section>
+
+<script src="/serif/wasm_exec.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var dropzone   = document.getElementById("dropzone");
+  var fileInput  = document.getElementById("file-input");
+  var status     = document.getElementById("status");
+  var landing    = document.getElementById("landing");
+  var result     = document.getElementById("result");
+  var resultName = document.getElementById("result-name");
+  var preview    = document.getElementById("preview");
+  var downloadBtn = document.getElementById("download-btn");
+  var newBtn     = document.getElementById("new-btn");
+
+  var ready = false;
+  var lastHTML = "";
+  var lastName = "document.html";
+
+  function setStatus(msg, isError) {
+    status.textContent = msg || "";
+    status.classList.toggle("error", !!isError);
+  }
+
+  /* ---- Load the WebAssembly renderer ----
+     Prefer streaming compilation, but fall back to fetch+arrayBuffer when the
+     host serves .wasm with the wrong Content-Type (instantiateStreaming is
+     strict and requires application/wasm). */
+  var go = new Go();
+  var WASM_URL = "/serif/serif.wasm";
+
+  function instantiate() {
+    if (WebAssembly.instantiateStreaming) {
+      return WebAssembly.instantiateStreaming(fetch(WASM_URL), go.importObject)
+        .catch(function () {
+          return fetch(WASM_URL)
+            .then(function (r) { return r.arrayBuffer(); })
+            .then(function (buf) { return WebAssembly.instantiate(buf, go.importObject); });
+        });
+    }
+    return fetch(WASM_URL)
+      .then(function (r) { return r.arrayBuffer(); })
+      .then(function (buf) { return WebAssembly.instantiate(buf, go.importObject); });
+  }
+
+  instantiate()
+    .then(function (obj) {
+      go.run(obj.instance);           // registers window.serifRender
+      ready = true;
+      dropzone.classList.remove("disabled");
+      setStatus("Ready — drop a Markdown file to begin.");
+    })
+    .catch(function (err) {
+      setStatus("Could not load the renderer: " + err.message, true);
+    });
+
+  /* ---- File handling ---- */
+  function outName(inName) {
+    return inName.replace(/\.(md|markdown|mdown|mkd|mkdn|text|txt)$/i, "") + ".html";
+  }
+
+  function render(text, name) {
+    if (!ready || typeof window.serifRender !== "function") {
+      setStatus("Renderer is not ready yet — one moment.", true);
+      return;
+    }
+    var res = window.serifRender(text, { source: name });
+    if (res && res.error) {
+      setStatus("Could not render: " + res.error, true);
+      return;
+    }
+    lastHTML = res.html;
+    lastName = outName(name);
+    resultName.textContent = name;
+    preview.srcdoc = lastHTML;
+    result.classList.add("open");
+    setStatus("");
+  }
+
+  function handleFile(file) {
+    if (!file) return;
+    setStatus("Rendering " + file.name + "…");
+    var reader = new FileReader();
+    reader.onload = function () { render(String(reader.result), file.name); };
+    reader.onerror = function () { setStatus("Could not read the file.", true); };
+    reader.readAsText(file);
+  }
+
+  fileInput.addEventListener("change", function () {
+    if (fileInput.files.length) handleFile(fileInput.files[0]);
+    fileInput.value = "";   // allow re-selecting the same file
+  });
+
+  /* Drag & drop on the whole window, highlighting the dropzone. */
+  ["dragenter", "dragover"].forEach(function (evt) {
+    window.addEventListener(evt, function (e) {
+      e.preventDefault();
+      if (ready) dropzone.classList.add("dragover");
+    });
+  });
+  ["dragleave", "drop"].forEach(function (evt) {
+    window.addEventListener(evt, function (e) {
+      e.preventDefault();
+      if (evt === "dragleave" && e.relatedTarget) return;
+      dropzone.classList.remove("dragover");
+    });
+  });
+  window.addEventListener("drop", function (e) {
+    if (!ready) return;
+    if (e.dataTransfer && e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  });
+
+  /* ---- Result actions ---- */
+  downloadBtn.addEventListener("click", function () {
+    var blob = new Blob([lastHTML], { type: "text/html" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = lastName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  newBtn.addEventListener("click", function () {
+    result.classList.remove("open");
+    preview.srcdoc = "";
+    setStatus("Ready — drop a Markdown file to begin.");
+  });
+})();
+</script>
+</body>
+</html>
